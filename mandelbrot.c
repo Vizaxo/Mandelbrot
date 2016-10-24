@@ -1,5 +1,14 @@
-#define MAX_ITERATIONS 100000
+#define MAX_ITERATIONS 10000
 
+int *mandelbrot_array;
+struct {
+	int screen_width;
+	int screen_height;
+	double fractal_width;
+	double fractal_height; 
+	double fractal_centre_x;
+	double fractal_centre_y;
+} mandel_parameters = {0, 0, 0.0, 0.0, 0.0, 0.0};
 /*
  * Returns 0 if the complex number x + yi is in the Mandelbrot set.
  */
@@ -32,11 +41,28 @@ int mandelbrot_pixel(double const x, double const y)
  * Calculates the array of return values for a given frame of the mandelbrot
  * set. Returns 0 if there were no errors.
  */
-int calculate_mandelbrot_frame(int screen_width, int screen_height, 
+int *calculate_mandelbrot_frame(int screen_width, int screen_height, 
 		double fractal_width, double fractal_height, 
-		double fractal_centre_x, double fractal_centre_y, 
-		int mandelbrot_values_array[])
+		double fractal_centre_x, double fractal_centre_y)
 {
+	mandelbrot_array = realloc(mandelbrot_array, sizeof(int) * 
+			screen_height * screen_width);
+	if(mandel_parameters.screen_width == screen_width &&
+			mandel_parameters.screen_height == screen_height &&
+			mandel_parameters.fractal_width == fractal_width &&
+			mandel_parameters.fractal_height == fractal_height &&
+			mandel_parameters.fractal_centre_x == fractal_centre_x &&
+			mandel_parameters.fractal_centre_y == fractal_centre_y) {
+		return mandelbrot_array;
+		printf("quick\n");
+	}
+	printf("LONG TIME\n");
+	mandel_parameters.screen_width = screen_width;
+	mandel_parameters.screen_height = screen_height;
+	mandel_parameters.fractal_width = fractal_width;
+	mandel_parameters.fractal_height = fractal_height;
+	mandel_parameters.fractal_centre_x = fractal_centre_x;
+	mandel_parameters.fractal_centre_y = fractal_centre_y;
 	double x, y;
 	for(int i = 0; i < screen_height; i++) {
 		y = - fractal_centre_y + (i - (screen_height / 2.0)) * 
@@ -44,11 +70,10 @@ int calculate_mandelbrot_frame(int screen_width, int screen_height,
 		for(int j = 0; j < screen_width; j++) {
 			x = fractal_centre_x + (j - (screen_width / 2.0)) * 
 				fractal_width / screen_width;
-			mandelbrot_values_array[i * screen_width + j] = 
+			mandelbrot_array[i * screen_width + j] = 
 				mandelbrot_pixel(x, y);
 		}
 		//printf(":%f, %f, %d, %d\n", x, y, mandelbrot_pixel(x, y), 
-				//mandelbrot_values_array[i*screen_width + screen_height - 1]);
 	}
-	return 0;
+	return mandelbrot_array;
 }

@@ -34,9 +34,9 @@ void setup_bash()
 	int win_height = window.ws_row - 1; /* -1 for prompt */
 	int win_width = window.ws_col; 
 
-	int mandelbrot_array[1920 * 1080]; //TODO: setup dynamic array
-	calculate_mandelbrot_frame(win_width, win_height, 3.0, 2.0, 0, 0, 
-			mandelbrot_array);
+	int *mandelbrot_array;
+
+	mandelbrot_array = calculate_mandelbrot_frame(win_width, win_height, 3.0, 2.0, 0, 0);
 	for(int i = 0; i < win_height; i++) {
 		for(int j = 0; j < win_width; j++) {
 			if(mandelbrot_array[i * win_width + j] != 0)

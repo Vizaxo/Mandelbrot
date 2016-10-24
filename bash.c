@@ -1,4 +1,4 @@
-#include "mandelbrot.h"
+#include "fractal.h"
 
 void get_terminal_size()
 {

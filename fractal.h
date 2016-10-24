@@ -1,5 +1,5 @@
-#ifndef __MANDELBROT_H__
-#define __MANDELBROT_H__
+#ifndef __FRACTAL_H__
+#define __FRACTAL_H__
 
 #include <sys/ioctl.h>
 #include <stdio.h>

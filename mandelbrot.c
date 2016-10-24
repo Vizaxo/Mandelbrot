@@ -1,4 +1,4 @@
-#include "mandelbrot.h"
+#include "fractal.h"
 
 int mandelbrot_pixel(double const x, double const y);
 double pixel_location(double fractal_centre, int counter, 

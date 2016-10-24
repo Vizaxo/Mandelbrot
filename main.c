@@ -1,9 +1,9 @@
-#include "mandelbrot.h"
+#include "fractal.h"
 
 void setup_bash();
 void setup_x();
-void print_bash_mandelbrot();
 void (*print_pixel)(int, int, int *);
+int *(*calculate_fractal)();
 
 int main(int argc, char *argv[])
 {
@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
 
 
 	if(argc > 1) {
+		calculate_fractal = &calculate_mandelbrot_frame;
 		if(strcmp(argv[1], "x") == 0 || strcmp(argv[1], "X") == 0) {
 			print_pixel = &print_x_pixel;
 			setup_x();
@@ -43,7 +44,7 @@ void draw_frame()
 {
 	int *values;
 
-	values = calculate_mandelbrot_frame();
+	values = calculate_fractal();
 	for(int i = 0; i < screen_height; i++) {
 		for(int j = 0; j < screen_width; j++) {
 			print_pixel(j, i, values);

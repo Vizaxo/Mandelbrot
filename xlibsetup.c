@@ -1,10 +1,9 @@
-#include "mandelbrot.h"
+#include "fractal.h"
 
 x_display *display;
 
 void open_display();
 void create_window(int x, int y, int width, int height);
-void print_pixel(int j, int i, int *mandelbrot_array);
 
 void make_x_display()
 {

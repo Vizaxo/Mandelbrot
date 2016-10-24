@@ -1,4 +1,4 @@
-#define MAX_ITERATIONS 10000
+#include "mandelbrot.h"
 
 int *mandelbrot_array;
 struct {

@@ -1,39 +1,19 @@
-#include <X11/Xlib.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <math.h>
+#include "mandelbrot.h"
 
-#define BLUE_EXPONENT 0.1
-#define GREEN_EXPONENT 0.4
-#define RED_EXPONENT 0.3
-#define POWER_EXPONENT_BASE 10000
+void open_display(x_display *display);
+void init_gc(x_display *display);
+void create_window(x_display *display, int x, int y, int width, int height);
+void draw_mandelbrot_frame(x_display *display);
+void draw_screen(x_display *display);
 
-/*
-#define FRACTAL_WIDTH 0.00010
-#define FRACTAL_HEIGHT 0.00005
-#define FRACTAL_CENTRE_X -1.0103
-#define FRACTAL_CENTRE_Y 0.25045
-*/
-#define FRACTAL_WIDTH 0.0003
-#define FRACTAL_HEIGHT 0.0002
-#define FRACTAL_CENTRE_X -0.7565
-#define FRACTAL_CENTRE_Y -0.06
-
-
-#include "mandelbrot.c"
-
-typedef struct {
-	Display *display;
-	int width;
-	int height;
-	int screen_num;
-	Window root_window;
-	Window program_window;
-	unsigned long white_pixel;
-	unsigned long black_pixel;
-	GC gc;
-	Colormap screen_colormap;
-} x_display;
+void make_x_display(x_display *display, int *screen_width, int *screen_height)
+{
+	open_display(display);
+	init_gc(display);
+	create_window(display, 0, 0, 100, 100);
+	*screen_width = (*display).width;
+	*screen_height = (*display).height;
+}
 
 void open_display(x_display *display)
 {
@@ -84,8 +64,6 @@ void draw_mandelbrot_frame(x_display *display)
 	system_color.blue = 0;
 	system_color.green = 0;
 	//Status rc = XAllocColor((*display).display, (*display).screen_colormap, &system_color);
-	Display *disp = (*display).display;
-	Colormap scr_col = (*display).screen_colormap;
 	Status rc;
 	rc = 1;//XAllocColor(disp, scr_col, &system_color);
 	XSetForeground((*display).display, (*display).gc, (*display).black_pixel);
@@ -135,11 +113,9 @@ void draw_screen(x_display *display)
 
 void display_loop(x_display *display)
 {
-	int window_width_temp, window_height_temp;
 	XEvent event;
 	while(1) {
 		XNextEvent((*display).display, &event);
-		window_width_temp = window_height_temp = 0;
 
 		if(event.type == Expose) {
 			printf("expose event::\n");
@@ -154,19 +130,10 @@ void display_loop(x_display *display)
 				draw_screen(display);
 		} else if(event.type == KeyPress)
 			printf("keypress event\n");
-		window_width_temp = (*display).width;
-		window_height_temp = (*display).height;
 	}
 }
 
 void close_display(x_display *display)
 {
 	XCloseDisplay((*display).display);
-}
-
-void make_x_display(x_display *display_ptr)
-{
-	open_display(display_ptr);
-	init_gc(display_ptr);
-	create_window(display_ptr, 0, 0, 100, 100);
 }

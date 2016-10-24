@@ -3,6 +3,7 @@
 void setup_bash();
 void setup_x();
 void print_bash_mandelbrot();
+void (*print_pixel)(int, int, int *);
 
 int main(int argc, char *argv[])
 {
@@ -11,56 +12,41 @@ int main(int argc, char *argv[])
 	fractal_centre_x = -0.7565;
 	fractal_centre_y = -0.06;
 
+
 	if(argc > 1) {
 		if(strcmp(argv[1], "x") == 0 || strcmp(argv[1], "X") == 0) {
-			printf("x if\n");
+			print_pixel = &print_x_pixel;
 			setup_x();
 		} else if (strcmp(argv[1], "bash") == 0) {
-			printf("bash if\n");
+			print_pixel = &print_bash_char;
 			setup_bash();
-		} else if (strcmp(argv[1], "ascii") == 0) {
-			printf("ascii if\n");
+		} else if (strcmp(argv[1], "ascii") == 0)
 			;
-		} else {
-			printf("i have no idea what's going on\n");
-		}
+		draw_frame();
 	}
 	return 0;
 }
 
 void setup_x()
 {
-	printf("x\n");
-	x_display display;
-	make_x_display(&display);
-
-	display_loop(&display);
-	close_display(&display);
+	make_x_display();
+	display_loop();
+	close_display();
 }
 
 void setup_bash()
 {
-	printf("bash\n");
-	struct winsize window;
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &window);
-	screen_height = window.ws_row - 1; /* -1 for prompt */
-	screen_width = window.ws_col; 
-
-	print_bash_mandelbrot();
+	get_terminal_size();
 }
 
-void print_bash_mandelbrot()
+void draw_frame()
 {
-	int *mandelbrot_array;
+	int *values;
 
-	mandelbrot_array = calculate_mandelbrot_frame(screen_width, screen_height, 3.0, 2.0, 0, 0);
+	values = calculate_mandelbrot_frame();
 	for(int i = 0; i < screen_height; i++) {
 		for(int j = 0; j < screen_width; j++) {
-			if(mandelbrot_array[i * screen_width + j] != 0)
-				printf("@");
-			else
-				printf(" ");
+			print_pixel(j, i, values);
 		}
-		printf("\n");
 	}
 }

@@ -9,23 +9,12 @@
 #include <X11/Xlib.h>
 #include <math.h>
 
+#define MAX_ITERATIONS 1000
+
 #define BLUE_EXPONENT 0.1
 #define GREEN_EXPONENT 0.4
 #define RED_EXPONENT 0.3
 #define POWER_EXPONENT_BASE 10000
-
-/*
-#define FRACTAL_WIDTH 0.00010
-#define FRACTAL_HEIGHT 0.00005
-#define FRACTAL_CENTRE_X -1.0103
-#define FRACTAL_CENTRE_Y 0.25045
-*/
-#define FRACTAL_WIDTH 0.0003
-#define FRACTAL_HEIGHT 0.0002
-#define FRACTAL_CENTRE_X -0.7565
-#define FRACTAL_CENTRE_Y -0.06
-
-#define MAX_ITERATIONS 10000
 
 typedef struct {
 	Display *display;
@@ -44,9 +33,29 @@ int screen_height, screen_width;
 double fractal_height, fractal_width;
 double fractal_centre_x, fractal_centre_y;
 
-void make_x_display(x_display *display);
-void display_loop(x_display *display);
-void close_display(x_display *display);
+typedef struct {
+	int screen_width;
+	int screen_height;
+	double fractal_width;
+	double fractal_height; 
+	double fractal_centre_x;
+	double fractal_centre_y;
+} fractal_parameters;
+
+//main.c
+void draw_frame();
+
+//mandelbrot.c
 int *calculate_mandelbrot_frame();
+
+//xlibsetup.c
+void make_x_display();
+void display_loop();
+void close_display();
+void print_x_pixel(int j, int i, int *values);
+
+//bash.c
+void get_terminal_size();
+void print_bash_char(int j, int i, int *values);
 
 #endif

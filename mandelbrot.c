@@ -1,14 +1,61 @@
 #include "mandelbrot.h"
 
+int mandelbrot_pixel(double const x, double const y);
+double pixel_location(double fractal_centre, int counter, 
+		int pixel_count_dimension, double fractal_size_dimension);
+
 int *mandelbrot_array;
-struct {
-	int screen_width;
-	int screen_height;
-	double fractal_width;
-	double fractal_height; 
-	double fractal_centre_x;
-	double fractal_centre_y;
-} mandel_parameters = {0, 0, 0.0, 0.0, 0.0, 0.0};
+fractal_parameters params = {0, 0, 0.0, 0.0, 0.0, 0.0};
+
+
+/*
+ * Calculates the array of return values for a given frame of the mandelbrot
+ * set. Returns 0 if there were no errors.
+ */
+int *calculate_mandelbrot_frame()
+{
+	mandelbrot_array = realloc(mandelbrot_array, sizeof(int) * 
+			screen_height * screen_width);
+	if(		params.screen_width == screen_width &&
+			params.screen_height == screen_height &&
+			params.fractal_width == fractal_width &&
+			params.fractal_height == fractal_height &&
+			params.fractal_centre_x == fractal_centre_x &&
+			params.fractal_centre_y == fractal_centre_y) {
+		printf("quick\n");
+		return mandelbrot_array;
+	}
+	printf("LONG TIME\n");
+	params.screen_width = screen_width;
+	params.screen_height = screen_height;
+	params.fractal_width = fractal_width;
+	params.fractal_height = fractal_height;
+	params.fractal_centre_x = fractal_centre_x;
+	params.fractal_centre_y = fractal_centre_y;
+	double x, y;
+	for(int i = 0; i < screen_height; i++) {
+		y = pixel_location(- fractal_centre_y, i, 
+				screen_height, fractal_height);
+		for(int j = 0; j < screen_width; j++) {
+			x = fractal_centre_x + (j - (screen_width / 2.0)) * 
+				fractal_width / screen_width;
+			x = pixel_location(fractal_centre_x, j, 
+					screen_width, fractal_width);
+			mandelbrot_array[i * screen_width + j] = 
+				mandelbrot_pixel(x, y);
+		}
+		//printf(":%f, %f, %d, %d\n", x, y, mandelbrot_pixel(x, y), 
+	}
+	return mandelbrot_array;
+}
+
+double pixel_location(double fractal_centre, int counter, 
+		int pixel_count_dimension, double fractal_size_dimension)
+{
+	return fractal_centre + (counter - (pixel_count_dimension / 2.0)) * 
+				fractal_size_dimension / pixel_count_dimension;
+}
+
 /*
  * Returns 0 if the complex number x + yi is in the Mandelbrot set.
  */
@@ -35,43 +82,4 @@ int mandelbrot_pixel(double const x, double const y)
 	} while(zr * zr + zi * zi <= 4);
 	//printf("%d, %f::\n", i, z);
 	return counter;
-}
-
-/*
- * Calculates the array of return values for a given frame of the mandelbrot
- * set. Returns 0 if there were no errors.
- */
-int *calculate_mandelbrot_frame()
-{
-	mandelbrot_array = realloc(mandelbrot_array, sizeof(int) * 
-			screen_height * screen_width);
-	if(mandel_parameters.screen_width == screen_width &&
-			mandel_parameters.screen_height == screen_height &&
-			mandel_parameters.fractal_width == fractal_width &&
-			mandel_parameters.fractal_height == fractal_height &&
-			mandel_parameters.fractal_centre_x == fractal_centre_x &&
-			mandel_parameters.fractal_centre_y == fractal_centre_y) {
-		printf("quick\n");
-		return mandelbrot_array;
-	}
-	printf("LONG TIME\n");
-	mandel_parameters.screen_width = screen_width;
-	mandel_parameters.screen_height = screen_height;
-	mandel_parameters.fractal_width = fractal_width;
-	mandel_parameters.fractal_height = fractal_height;
-	mandel_parameters.fractal_centre_x = fractal_centre_x;
-	mandel_parameters.fractal_centre_y = fractal_centre_y;
-	double x, y;
-	for(int i = 0; i < screen_height; i++) {
-		y = - fractal_centre_y + (i - (screen_height / 2.0)) * 
-			fractal_height / screen_height;
-		for(int j = 0; j < screen_width; j++) {
-			x = fractal_centre_x + (j - (screen_width / 2.0)) * 
-				fractal_width / screen_width;
-			mandelbrot_array[i * screen_width + j] = 
-				mandelbrot_pixel(x, y);
-		}
-		//printf(":%f, %f, %d, %d\n", x, y, mandelbrot_pixel(x, y), 
-	}
-	return mandelbrot_array;
 }

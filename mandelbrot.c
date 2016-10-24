@@ -41,9 +41,7 @@ int mandelbrot_pixel(double const x, double const y)
  * Calculates the array of return values for a given frame of the mandelbrot
  * set. Returns 0 if there were no errors.
  */
-int *calculate_mandelbrot_frame(int screen_width, int screen_height, 
-		double fractal_width, double fractal_height, 
-		double fractal_centre_x, double fractal_centre_y)
+int *calculate_mandelbrot_frame()
 {
 	mandelbrot_array = realloc(mandelbrot_array, sizeof(int) * 
 			screen_height * screen_width);
@@ -53,8 +51,8 @@ int *calculate_mandelbrot_frame(int screen_width, int screen_height,
 			mandel_parameters.fractal_height == fractal_height &&
 			mandel_parameters.fractal_centre_x == fractal_centre_x &&
 			mandel_parameters.fractal_centre_y == fractal_centre_y) {
-		return mandelbrot_array;
 		printf("quick\n");
+		return mandelbrot_array;
 	}
 	printf("LONG TIME\n");
 	mandel_parameters.screen_width = screen_width;

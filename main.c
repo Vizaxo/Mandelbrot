@@ -1,18 +1,15 @@
 #include "mandelbrot.h"
 
-int screen_height, screen_width;
-double fractal_height, fractal_width;
-double fractal_centre_x, fractal_centre_y;
-
 void setup_bash();
 void setup_x();
+void print_bash_mandelbrot();
 
 int main(int argc, char *argv[])
 {
-	fractal_height = 2.0;
-	fractal_width = 3.0;
-	fractal_centre_y = 0.0;
-	fractal_centre_x = 0.0;
+	fractal_width = 0.0003;
+	fractal_height = 0.0002;
+	fractal_centre_x = -0.7565;
+	fractal_centre_y = -0.06;
 
 	if(argc > 1) {
 		if(strcmp(argv[1], "x") == 0 || strcmp(argv[1], "X") == 0) {
@@ -35,7 +32,7 @@ void setup_x()
 {
 	printf("x\n");
 	x_display display;
-	make_x_display(&display, &screen_width, &screen_height);
+	make_x_display(&display);
 
 	display_loop(&display);
 	close_display(&display);
@@ -46,16 +43,20 @@ void setup_bash()
 	printf("bash\n");
 	struct winsize window;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &window);
-	int win_height = window.ws_row - 1; /* -1 for prompt */
-	int win_width = window.ws_col; 
+	screen_height = window.ws_row - 1; /* -1 for prompt */
+	screen_width = window.ws_col; 
 
+	print_bash_mandelbrot();
+}
+
+void print_bash_mandelbrot()
+{
 	int *mandelbrot_array;
 
-	mandelbrot_array = calculate_mandelbrot_frame(win_width, win_height, 3.0, 2.0, 0, 0);
-	for(int i = 0; i < win_height; i++) {
-		for(int j = 0; j < win_width; j++) {
-			if(mandelbrot_array[i * win_width + j] != 0)
-				//printf("%2d", j);
+	mandelbrot_array = calculate_mandelbrot_frame(screen_width, screen_height, 3.0, 2.0, 0, 0);
+	for(int i = 0; i < screen_height; i++) {
+		for(int j = 0; j < screen_width; j++) {
+			if(mandelbrot_array[i * screen_width + j] != 0)
 				printf("@");
 			else
 				printf(" ");

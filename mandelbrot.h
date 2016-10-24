@@ -40,11 +40,13 @@ typedef struct {
 	Colormap screen_colormap;
 } x_display;
 
-void make_x_display(x_display *display, int *screen_width, int *screen_height);
+int screen_height, screen_width;
+double fractal_height, fractal_width;
+double fractal_centre_x, fractal_centre_y;
+
+void make_x_display(x_display *display);
 void display_loop(x_display *display);
 void close_display(x_display *display);
-int *calculate_mandelbrot_frame(int screen_width, int screen_height, 
-		double fractal_width, double fractal_height, 
-		double fractal_centre_x, double fractal_centre_y);
+int *calculate_mandelbrot_frame();
 
 #endif
